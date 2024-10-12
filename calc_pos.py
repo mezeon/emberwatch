@@ -1,17 +1,28 @@
 from time import time
 from datetime import datetime
 from json import loads
-from math import sqrt, sin, cos, asin, pi, degrees, radians, atan2, atan
-from print_data_row import print_data_row
-from sidereal_time import sidereal_time
-
+from math import sqrt, sin, cos, asin, pi, degrees, radians, atan2
 def get_epoch():
     now = datetime.now()
     return int(now.strftime('%w'))*86400 + time()%86400
 
 
-scheme = (6, 8, 8, 8)
-print('| PRN | - h - | - A - | - r - |')
+'''def print_data_row(scheme, data):
+    for i in range(len(data)):
+        current_data = str(data[i])
+        current_scheme = scheme[i]
+        current_scheme -= len(current_data)
+        current_scheme /= 2
+        if current_scheme%1 == 0:
+            current_data = ' '*int(current_scheme) + current_data + ' '*int(current_scheme)
+        else:
+            current_data = ' '+ ' '*int(current_scheme) + current_data + ' '*int(current_scheme)
+        print(current_data, end='')
+    print()'''
+
+#scheme = (6, 8, 8, 8)
+data = dict()
+#print('| PRN | - h - | - A - | - r - |')
 def calc_pos(lat, lon):
     with open('eph') as file:
         ephs = file.read()
@@ -61,7 +72,7 @@ def calc_pos(lat, lon):
         phi = asin(z/r)
         lambda_ = atan2(y,x)
     
-        if lambda_ < 0: lambda_ += 2*pi
+        #if lambda_ < 0: lambda_ += 2*pi
 
         H = (-radians(lon) + lambda_)
 
@@ -69,8 +80,10 @@ def calc_pos(lat, lon):
         cos_A = -(sin(phi) - sin(h) * sin(radians(lat))) / (cos(h) * cos(radians(lat)))
         sin_A = cos(phi) * sin(H) / cos(h)
         A = atan2(sin_A, cos_A)
-        if A < 0:
+        if A < 0: 
             A += pi*2
 
         #print_data_row(scheme, (eph, round(degrees(phi),1), round(degrees(lambda_),1), round(r_/1000)))
-        print_data_row(scheme, (eph, round(degrees(h),1), round(degrees(A),1), round(r_/1000)))
+        #print_data_row(scheme, (eph, round(degrees(h),1), round(degrees(A),1), round(r_/1000)))
+        data.update({eph: {'h': round(degrees(h),1), 'A': round(degrees(A),1), 'r': round(r_/1000)}})
+    return data

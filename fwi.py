@@ -1,8 +1,37 @@
 from math import exp, log
-from print_data_row import print_data_row
 
 # Based on Van Wagner, C.E.; Pickett, T.L. 1985. Equations and FORTRAN program for the Canadian Forest Fire Weather Index System. Canadian Forest
 # Service, Ottawa, ON. Forestry Technical Report 33. 
+
+# read input
+'''n = int(input('Number of datasets: '))
+T = []
+H = []
+W = []
+R = []
+month = []
+day = []'''
+
+
+'''daily = input('Do you want to include day of month in the results? [y/something else]: ')
+
+if daily == 'y':
+    print('Input your data in the following format: <month [1, 12]> <day> <temperature [*C]> <relative humidity [%]> <wind speed [km/h]> <rain [m]>')
+else:
+    print('Input your data in the following format: <month [1, 12]> <temperature [*C]> <relative humidity [%]> <wind speed [km/h]> <rain [m]>')'''
+
+'''def print_data_row(scheme, data):
+    for i in range(len(data)):
+        current_data = str(data[i])
+        current_scheme = scheme[i]
+        current_scheme -= len(current_data)
+        current_scheme /= 2
+        if current_scheme%1 == 0:
+            current_data = ' '*int(current_scheme) + current_data + ' '*int(current_scheme)
+        else:
+            current_data = ' '+ ' '*int(current_scheme) + current_data + ' '*int(current_scheme)
+        print(current_data, end='')
+    print()'''
 
 def FFMC(FO, H, R, T, W):
 
@@ -125,23 +154,7 @@ def FWI(U, R):
     return round(S, 1)
 
 
-# read input
-n = int(input('Number of datasets: '))
-T = []
-H = []
-W = []
-R = []
-month = []
-day = []
-
-daily = input('Do you want to include day of month in the results? [y/something else]: ')
-
-if daily == 'y':
-    print('Input your data in the following format: <month [1, 12]> <day> <temperature [*C]> <relative humidity [%]> <wind speed [km/h]> <rain [m]>')
-else:
-    print('Input your data in the following format: <month [1, 12]> <temperature [*C]> <relative humidity [%]> <wind speed [km/h]> <rain [m]>')
-
-for i in range(n):
+'''for i in range(n):
     print(str(i) + ': ', end='')
     data = input()
     data = data.split(' ')
@@ -157,7 +170,7 @@ for i in range(n):
     T.append(float(data[idx+1]))
     H.append(float(data[idx+2]))
     W.append(float(data[idx+3]))
-    R.append(float(data[idx+4]))
+    R.append(float(data[idx+4]))'''
 
 # initial standard values
 FO = 85 # yesterday's FFMC (Fine Fuel Moisture Code)
@@ -166,15 +179,15 @@ DO = 15.0 # yesterdays DC (Drought Code)
 
 # (70, 20, 828)
 
-scheme = None
+'''scheme = None
 if daily == 'y':
     print('\n| month | - day - | - FFMC - | - DMC - | - DC - | - ISI - | - BUI - | - FWI - |')
     scheme = (8, 10, 11, 10, 9, 10, 10, 10)
 else:
     print('\n| month | - FFMC - | - DMC - | - DC - | - ISI - | - BUI - | - FWI - |')
     scheme = (8, 11, 10, 9, 10, 10, 10)
-
-for i in range(n):
+'''
+'''for i in range(n):
     F = FFMC(FO, H[i], R[i], T[i], W[i])
     M = F[1]
     P = DMC(PO, month[i], H[i], R[i], T[i])
@@ -190,4 +203,15 @@ for i in range(n):
 
     FO = F[0]
     PO = P
-    DO = D
+    DO = D'''
+
+def get_fwi(H, R, T, W, month): # humidity rain temperature wind month
+    F = FFMC(FO, H, R, T, W)
+    M = F[1]
+    P = DMC(PO, month, H, R, T)
+    D = DC(DO, month, R, T)
+    R_ = ISI(W, M)
+    U = BUI(P, D)
+    S = FWI(U, R_)
+
+    return S
