@@ -1,6 +1,6 @@
-from get_eph import get_eph
-from parse_eph import parse_eph
-from calc_pos import calc_pos
+from gps_tracker.get_eph import get_eph
+from gps_tracker.parse_eph import parse_eph
+from gps_tracker.calc_pos import calc_pos
 from fwi import get_fwi
 from lai import get_lai
 from fopi import get_fopi_lai, get_fopi_vod
