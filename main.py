@@ -9,9 +9,9 @@ from math import sin, sqrt, log10, log, radians, exp
 h0 = 1 # wysokość cansata nad ziemią w km
 
 # sekcja informacji VOD
-P0 = 6*10^-6 # moc odbierana z góry
-P = 2*10^-7 # moc odbierana z dołu
-PRN = '15' # PRN satelity GPS, którego sygnał odbieramy
+P0 = 4.7 # moc odbierana z góry
+P = 0.5 # moc odbierana z dołu
+PRN = '25' # PRN satelity GPS, którego sygnał odbieramy
 
 # sekcja informacji FWI
 hum = 10
@@ -22,7 +22,7 @@ month = 10
 
 # sekcja informacji LAI
 m = 3 # liczba zdjęć
-D = (0.02, 0.05, 0.09) # wielkość liścia w px danego zdjęcia
+D = (1, 2, 4) # wielkość liścia w px danego zdjęcia
 
 # współrzędne geogarficzne obserwatora (53.0144434, 18.4394129 - Toruń)
 lat = 53.0144434
@@ -35,16 +35,16 @@ def main():
 
     data = calc_pos(lat, lon)
 
-    h = radians(data[PRN]['h'])
-    Rr = h0/sin(h)
+    h = data[PRN]['h']
+    Rr = h0/sin(radians(h))
     Rt = data[PRN]['r']
 
-    T = 1 - sqrt((Rr + Rt)**2*P/(Rt**2*P0)) # przy założeniu, że roślinność nie absorbuje tego promieniowania, odbija albo przepuszcza
-    vod = -log(T)*sin(h)
+    T = sqrt((Rr + Rt)**2*P/(Rt**2*P0)) # przy założeniu, że promieniowanie całkowicie się od ziemi odbija
+    vod = -log(T)*sin(radians(h))
     
     fwi = get_fwi(hum, rain, temp, wind, month)
     
-    lai = get_lai(m, D)/6 # WAŻNE - nie mam pojęcia, jak oni normalizują to LAI, przyjąłem ten sposób, bo typowo LAI jest niewiększe niż 6 i dziala, bo gdy LAI > 1 to FOPI > 100% (!)
+    lai = get_lai(m, D) # WAŻNE - nie mam pojęcia, jak oni normalizują to LAI
 
     fopi_lai = get_fopi_lai(lai, fwi)
     fopi_vod = get_fopi_vod(vod, fwi)
