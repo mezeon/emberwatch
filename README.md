@@ -1,3 +1,3 @@
-# CanFire
+# Emberwatch
 
-Repozytorium projektu CanFire
+The directory gps_tracker consists of three scripts: get_eph.py parse_eph.py calc_pos.py. The first downloads the latest GPS ephemeris from the ESA FTP server. The second parses them to the appropriate format for us. The last calculates current GPS satellites’ positions in the horizontal coordinate system. We have to put in geolocation for which we want to calculate the positions. lai.py fwi.py fopi.py calculate needed indexes as it was said before. The directory image_data stores pictures of canopy collected during the mission.
